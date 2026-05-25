@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SISTEMAS — OLIMPIADAS 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@200;300;400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue:  #1052f0;
+      --blue2: #0a3abf;
+      --light: #e8f0ff;
+      --dark:  #05091a;
+      --white: #ffffff;
+      --gold:  #f5c842;
+      --muted: rgba(5,9,26,0.38);
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      background: var(--white);
+      color: var(--dark);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* CURSOR */
+    #cur  { position:fixed; width:9px; height:9px; background:var(--blue); border-radius:50%; pointer-events:none; z-index:9999; top:0; left:0; transition:transform .15s; }
+    #cur2 { position:fixed; width:30px; height:30px; border:1px solid var(--blue); border-radius:50%; pointer-events:none; z-index:9998; top:0; left:0; opacity:.4; }
+
+    /* NAV */
+    nav {
+      position:fixed; top:1.2rem; left:50%; transform:translateX(-50%);
+      z-index:300;
+      display:flex; align-items:center; gap:2rem;
+      background:rgba(255,255,255,.9);
+      backdrop-filter:blur(20px);
+      border:1px solid rgba(5,9,26,.07);
+      border-radius:100px;
+      padding:.65rem 1.8rem;
+      white-space:nowrap;
+    }
+    .logo { font-weight:900; font-size:.85rem; letter-spacing:.15em; text-transform:uppercase; }
+    .nav-links { display:flex; gap:1.5rem; }
+    .nav-links a {
+      font-size:.65rem; letter-spacing:.12em; text-transform:uppercase;
+      text-decoration:none; color:var(--muted);
+      transition:color .2s; cursor:none;
+    }
+    .nav-links a:hover, .nav-links a.active { color:var(--blue); }
+    .nav-pill {
+      font-size:.62rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase;
+      text-decoration:none; color:var(--white); background:var(--blue);
+      padding:.45rem 1.1rem; border-radius:100px; cursor:none; transition:background .2s;
+    }
+    .nav-pill:hover { background:var(--dark); }
+
+    /* ══════════════════════════════
+       HERO — CONTADOR
+    ══════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      background: var(--dark);
+      display: flex; flex-direction:column;
+      justify-content: center; align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding: 7rem 2rem 4rem;
+    }
+
+    .hero-bg {
+      position:absolute; inset:0;
+      background: url('recuerdo3.jpg') center/cover no-repeat;
+      filter: brightness(.25) saturate(.6);
+    }
+    .hero::before {
+      content:'';
+      position:absolute; inset:0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity:.04; pointer-events:none; z-index:1;
+    }
+    .hero::after {
+      content:'';
+      position:absolute; inset:0;
+      background-image:
+        linear-gradient(rgba(16,82,240,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16,82,240,.06) 1px, transparent 1px);
+      background-size:60px 60px;
+      pointer-events:none; z-index:1;
+    }
+
+    .hero-content { position:relative; z-index:2; }
+
+    .hero-eyebrow {
+      font-size:.6rem; letter-spacing:.45em; text-transform:uppercase;
+      color:var(--blue); margin-bottom:1.5rem;
+      animation: fadeUp .8s .1s ease both;
+    }
+    .hero-title {
+      font-family:'Instrument Serif', serif;
+      font-style:italic;
+      font-size:clamp(3rem, 9vw, 8.5rem);
+      line-height:.88;
+      color:var(--white);
+      margin-bottom:.5rem;
+      animation: fadeUp .9s .25s ease both;
+    }
+    .hero-title span {
+      font-style:normal; font-family:'Outfit',sans-serif;
+      font-weight:900; color:var(--blue);
+    }
+    .hero-sub {
+      font-size:.75rem; letter-spacing:.2em; text-transform:uppercase;
+      color:rgba(255,255,255,.35); margin-bottom:3.5rem;
+      animation: fadeUp .9s .4s ease both;
+    }
+
+    /* CONTADOR */
+    .countdown {
+      display:flex; gap:1.5rem; justify-content:center;
+      margin-bottom:3rem;
+      animation: fadeUp .9s .55s ease both;
+    }
+    .cd-block {
+      display:flex; flex-direction:column; align-items:center;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:1rem;
+      padding:1.4rem 2rem;
+      min-width:90px;
+      backdrop-filter:blur(8px);
+    }
+    .cd-num {
+      font-family:'Outfit',sans-serif; font-weight:900;
+      font-size:clamp(2rem,5vw,3.5rem);
+      color:var(--white); line-height:1;
+      font-variant-numeric:tabular-nums;
+    }
+    .cd-label {
+      font-size:.5rem; letter-spacing:.3em; text-transform:uppercase;
+      color:rgba(255,255,255,.35); margin-top:.4rem;
+    }
+    .cd-sep {
+      font-family:'Outfit',sans-serif; font-weight:900;
+      font-size:2rem; color:var(--blue);
+      align-self:center; line-height:1;
+      margin-bottom:.8rem;
+    }
+
+    .champ-badge {
+      display:inline-flex; align-items:center; gap:.6rem;
+      background:rgba(245,200,66,.12);
+      border:1px solid rgba(245,200,66,.35);
+      color:var(--gold);
+      font-size:.62rem; letter-spacing:.25em; text-transform:uppercase;
+      padding:.5rem 1.4rem; border-radius:100px;
+      animation: fadeUp .9s .7s ease both;
+    }
+    .champ-badge svg { width:14px; height:14px; fill:var(--gold); }
+
+    /* ══════════════════════════════
+       SECCIÓN CAMPEONES
+    ══════════════════════════════ */
+    .champs {
+      background:var(--blue);
+      padding:5rem 5vw;
+      overflow:hidden;
+      position:relative;
+    }
+    .champs::before {
+      content:'CAMPEONES';
+      position:absolute; top:-1rem; left:0; right:0;
+      font-family:'Outfit',sans-serif; font-weight:900;
+      font-size:18vw; line-height:1;
+      color:rgba(255,255,255,.06);
+      text-align:center; pointer-events:none; user-select:none;
+      white-space:nowrap;
+    }
+    .champs-inner {
+      position:relative; z-index:2;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:3rem;
+    }
+    .champs-eyebrow {
+      font-size:.58rem; letter-spacing:.4em; text-transform:uppercase;
+      color:rgba(255,255,255,.5); margin-bottom:1rem;
+    }
+    .champs-title {
+      font-family:'Instrument Serif',serif; font-style:italic;
+      font-size:clamp(3rem,6vw,6rem); line-height:.9;
+      color:var(--white); margin-bottom:1.5rem;
+    }
+    .champs-title b {
+      font-style:normal; font-family:'Outfit',sans-serif;
+      font-weight:900; display:block;
+    }
+    .champs-desc {
+      font-size:.8rem; color:rgba(255,255,255,.65);
+      line-height:1.8; max-width:380px;
+    }
+    .trophy {
+      font-size:8rem; line-height:1;
+      animation: float 3s ease-in-out infinite;
+      flex-shrink:0;
+    }
+    @keyframes float {
+      0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)}
+    }
+
+    .stats {
+      display:flex; gap:3rem; margin-top:2.5rem;
+    }
+    .stat-num {
+      font-family:'Outfit',sans-serif; font-weight:900;
+      font-size:2.5rem; color:var(--gold); line-height:1;
+    }
+    .stat-label {
+      font-size:.6rem; letter-spacing:.2em; text-transform:uppercase;
+      color:rgba(255,255,255,.45); margin-top:.2rem;
+    }
+
+    /* ══════════════════════════════
+       MOMENTOS — MASONRY PINTEREST
+    ══════════════════════════════ */
+    .moments {
+      padding:5rem 5vw;
+    }
+    .section-label {
+      font-size:.58rem; letter-spacing:.4em; text-transform:uppercase;
+      color:var(--blue); margin-bottom:.6rem;
+    }
+    .section-title {
+      font-family:'Instrument Serif',serif; font-style:italic;
+      font-size:clamp(2.5rem,5vw,5rem); line-height:.9;
+      margin-bottom:2.5rem;
+    }
+
+    /* ── GRID 3 COLUMNAS: fila alta + fila corta ── */
+    .moments-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: 38vw 22vw;   /* fila 1 alta, fila 2 corta */
+      gap: .8rem;
+    }
+
+    .m-item {
+      border-radius: 1rem;
+      overflow: hidden;
+      position: relative;
+      background: var(--light);
+    }
+
+    .m-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .8s ease;
+    }
+    .m-item:hover img { transform: scale(1.06); }
+
+    /* overlay hover */
+    .m-overlay {
+      position:absolute; inset:0;
+      background:linear-gradient(to top, rgba(16,82,240,.7) 0%, transparent 50%);
+      opacity:0; transition:opacity .35s;
+      display:flex; align-items:flex-end; padding:1.2rem;
+    }
+    .m-item:hover .m-overlay { opacity:1; }
+    .m-overlay-text {
+      font-size:.6rem; letter-spacing:.2em; text-transform:uppercase;
+      color:var(--white);
+    }
+
+    /* ══════════════════════════════
+       MARQUEE
+    ══════════════════════════════ */
+    .marquee {
+      overflow:hidden; background:var(--dark); padding:.85rem 0;
+    }
+    .marquee-track {
+      display:flex; white-space:nowrap;
+      animation:mq 18s linear infinite;
+    }
+    .mq-i {
+      font-family:'Instrument Serif',serif; font-style:italic;
+      font-size:1.1rem; color:rgba(255,255,255,.5); padding:0 2rem;
+    }
+    .mq-i b { font-style:normal; font-family:'Outfit',sans-serif; font-weight:700; font-size:.7em; letter-spacing:.2em; text-transform:uppercase; color:var(--blue); }
+    @keyframes mq { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ══════════════════════════════
+       CTAS — IR A POLOS
+    ══════════════════════════════ */
+    .shop-cta {
+      padding:5rem 5vw;
+      display:grid; grid-template-columns:1fr 1fr; gap:1.2rem;
+    }
+    .shop-card {
+      border-radius:1.5rem; overflow:hidden;
+      position:relative; height:60vh;
+      text-decoration:none; cursor:none;
+      display:block;
+    }
+    .shop-card img {
+      width:100%; height:100%; object-fit:cover;
+      transition:transform .8s ease;
+      filter:brightness(.75);
+    }
+    .shop-card:hover img { transform:scale(1.05); }
+    .shop-card-text {
+      position:absolute; inset:0;
+      display:flex; flex-direction:column;
+      justify-content:flex-end; padding:2.5rem;
+      background:linear-gradient(to top, rgba(5,9,26,.8) 0%, transparent 60%);
+    }
+    .sc-tag {
+      font-size:.55rem; letter-spacing:.3em; text-transform:uppercase;
+      color:rgba(255,255,255,.6); margin-bottom:.6rem;
+    }
+    .sc-title {
+      font-family:'Instrument Serif',serif; font-style:italic;
+      font-size:clamp(2rem,4vw,3.5rem); line-height:.9;
+      color:var(--white); margin-bottom:1.2rem;
+    }
+    .sc-btn {
+      display:inline-flex; align-items:center; gap:.5rem;
+      font-size:.65rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+      color:var(--white); background:var(--blue);
+      padding:.55rem 1.3rem; border-radius:100px;
+      width:fit-content; transition:background .2s;
+    }
+    .shop-card:hover .sc-btn { background:var(--white); color:var(--blue); }
+
+    /* ══════════════════════════════
+       FOOTER
+    ══════════════════════════════ */
+    footer {
+      padding:1.8rem 5vw;
+      display:flex; justify-content:space-between; align-items:center;
+      border-top:1px solid rgba(5,9,26,.07);
+      font-size:.6rem; letter-spacing:.15em; text-transform:uppercase;
+      color:var(--muted);
+    }
+    footer strong { color:var(--dark); font-weight:700; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from{opacity:0;transform:translateY(20px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    /* RESPONSIVE */
+    @media(max-width:700px){
+      nav { gap:1rem; padding:.6rem 1.2rem; }
+      .nav-links { display:none; }
+      .countdown { gap:.6rem; }
+      .cd-block { padding:1rem 1.1rem; min-width:70px; }
+      .cd-sep { font-size:1.4rem; }
+      .champs-inner { flex-direction:column; text-align:center; }
+      .stats { justify-content:center; }
+      .moments-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: 55vw 55vw 55vw;
+      }
+      .shop-cta { grid-template-columns:1fr; }
+      .shop-card { height:55vw; }
+      footer { flex-direction:column; gap:.4rem; text-align:center; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Sistemas</div>
+  <div class="nav-links">
+    <a href="index.html" class="active">Inicio</a>
+    <a href="hombres.html">Hombres</a>
+    <a href="mujeres.html">Mujeres</a>
+  </div>
+  <a href="hombres.html" class="nav-pill">Ver polos</a>
+</nav>
+
+<!-- ── HERO CONTADOR ── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Ing. de Sistemas · Olimpiadas Universitarias</div>
+    <h1 class="hero-title">
+      Faltan<br><span>poco</span><br>días
+    </h1>
+    <div class="hero-sub">Julio 2026 · Edición limitada</div>
+
+    <div class="countdown">
+      <div class="cd-block">
+        <div class="cd-num" id="cd-d">00</div>
+        <div class="cd-label">Días</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block">
+        <div class="cd-num" id="cd-h">00</div>
+        <div class="cd-label">Horas</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block">
+        <div class="cd-num" id="cd-m">00</div>
+        <div class="cd-label">Min</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block">
+        <div class="cd-num" id="cd-s">00</div>
+        <div class="cd-label">Seg</div>
+      </div>
+    </div>
+
+    <div class="champ-badge">
+      <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Somos campeones 🏆
+    </div>
+  </div>
+</section>
+
+<!-- ── CAMPEONES ── -->
+<section class="champs">
+  <div class="champs-inner">
+    <div class="champs-text">
+      <div class="champs-eyebrow">// Orgullo de la carrera</div>
+      <h2 class="champs-title">
+        Siempre<br>
+        <b>GANAMOS.</b>
+      </h2>
+      <p class="champs-desc">
+        Ing. de Sistemas no solo codea mejor — también compite mejor. Llevamos el título con orgullo y vamos por más en las Olimpiadas 2026-I.
+      </p>
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-num">🥇</div>
+          <div class="stat-label">Campeones</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Actitud</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">2026</div>
+          <div class="stat-label">Volvemos</div>
+        </div>
+      </div>
+    </div>
+    <div class="trophy">🏆</div>
+  </div>
+</section>
+
+<!-- ── MOMENTOS ── -->
+<section class="moments">
+  <div class="section-label reveal">// Momentos</div>
+  <h2 class="section-title reveal">Nuestros<br><em>recuerdos.</em></h2>
+
+  <div class="moments-grid">
+    <div class="m-item reveal">
+      <img src="recuerdo5.jpg" alt="recuerdos">
+      <div class="m-overlay"><span class="m-overlay-text">Momento 01</span></div>
+    </div>
+    <div class="m-item reveal" style="transition-delay:.1s">
+      <img src="recuerdo4.jpg" alt="recuerdos2">
+      <div class="m-overlay"><span class="m-overlay-text">Momento 02</span></div>
+    </div>
+    <div class="m-item reveal" style="transition-delay:.2s">
+      <img src="recuerdo6.jpg" alt="recuerdos2">
+      <div class="m-overlay"><span class="m-overlay-text">Momento 03</span></div>
+    </div>
+    <div class="m-item reveal" style="transition-delay:.15s">
+      <img src="recuerdo3.jpg" alt="recuerdos2">
+      <div class="m-overlay"><span class="m-overlay-text">Momento 04</span></div>
+    </div>
+    <div class="m-item reveal" style="transition-delay:.25s">
+      <img src="recuerdo1.jpg" alt="recuerdos2">
+      <div class="m-overlay"><span class="m-overlay-text">Momento 05</span></div>
+    </div>
+    <div class="m-item reveal" style="transition-delay:.25s">
+      <img src="recuerdo2.jpg" alt="recuerdos2">
+      <div class="m-overlay"><span class="m-overlay-text">Momento 05</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span class="mq-i">Ing. de Sistemas &nbsp;<b>✦</b>&nbsp;</span>
+    <span class="mq-i">Olimpiadas 2026-I &nbsp;<b>✦</b>&nbsp;</span>
+    <span class="mq-i">Somos campeones &nbsp;<b>✦</b>&nbsp;</span>
+    <span class="mq-i">Edición limitada &nbsp;<b>✦</b>&nbsp;</span>
+    <span class="mq-i">Represent &nbsp;<b>✦</b>&nbsp;</span>
+    <span class="mq-i">Ing. de Sistemas &nbsp;<b>✦</b>&nbsp;</span>
+    <span class="mq-i">Olimpiadas 2026-I &nbsp;<b>✦</b>&nbsp;</span>
+    <span class="mq-i">Somos campeones &nbsp;<b>✦</b>&nbsp;</span>
+    <span class="mq-i">Edición limitada &nbsp;<b>✦</b>&nbsp;</span>
+    <span class="mq-i">Represent &nbsp;<b>✦</b>&nbsp;</span>
+  </div>
+</div>
+
+<!-- ── CARDS IR A POLOS ── -->
+<section class="shop-cta reveal">
+  <a href="hombres.html" class="shop-card">
+    <img src="modelo1.jpg" alt="Polos Hombres">
+    <div class="shop-card-text">
+      <div class="sc-tag">Colección</div>
+      <div class="sc-title">Polos<br>Hombres</div>
+      <div class="sc-btn">Ver looks →</div>
+    </div>
+  </a>
+  <a href="mujeres.html" class="shop-card">
+    <img src="polomujer.png" alt="Polos Mujeres">
+    <div class="shop-card-text">
+      <div class="sc-tag">Colección</div>
+      <div class="sc-title">Polos<br>Mujeres</div>
+      <div class="sc-btn">Ver looks →</div>
+    </div>
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div><strong>Polo Sistemas</strong> — Olimpiadas 2026-I</div>
+  <div>Ing. de Sistemas · Hecho por DavjStudio</div>
+</footer>
+
+<script>
+  // CURSOR
+  const c=document.getElementById('cur'),c2=document.getElementById('cur2');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  (function loop(){
+    c.style.left=mx-4+'px';c.style.top=my-4+'px';
+    rx+=(mx-rx)*.1;ry+=(my-ry)*.1;
+    c2.style.left=rx-15+'px';c2.style.top=ry-15+'px';
+    requestAnimationFrame(loop);
+  })();
+  document.querySelectorAll('a').forEach(el=>{
+    el.addEventListener('mouseenter',()=>c.style.transform='scale(2.5)');
+    el.addEventListener('mouseleave',()=>c.style.transform='scale(1)');
+  });
+
+  // COUNTDOWN — cambia la fecha aquí ↓ (año, mes-1, día)
+  const TARGET = new Date(2026, 6, 13); // 13 julio 2026
+  function tick(){
+    const now=new Date(), diff=TARGET-now;
+    if(diff<=0){
+      document.getElementById('cd-d').textContent='00';
+      document.getElementById('cd-h').textContent='00';
+      document.getElementById('cd-m').textContent='00';
+      document.getElementById('cd-s').textContent='00';
+      return;
+    }
+    const d=Math.floor(diff/86400000);
+    const h=Math.floor((diff%86400000)/3600000);
+    const m=Math.floor((diff%3600000)/60000);
+    const s=Math.floor((diff%60000)/1000);
+    document.getElementById('cd-d').textContent=String(d).padStart(2,'0');
+    document.getElementById('cd-h').textContent=String(h).padStart(2,'0');
+    document.getElementById('cd-m').textContent=String(m).padStart(2,'0');
+    document.getElementById('cd-s').textContent=String(s).padStart(2,'0');
+  }
+  tick(); setInterval(tick,1000);
+
+  // HERO TITLE dinámico
+  const diff0=TARGET-new Date();
+  const days=Math.floor(diff0/86400000);
+  document.querySelector('.hero-title').innerHTML=
+    `Faltan<br><span>${days}</span><br>días`;
+
+  // SCROLL REVEAL
+  const obs=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}
+  }),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(r=>obs.observe(r));
+</script>
+</body>
+</html>
